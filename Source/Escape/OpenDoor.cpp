@@ -18,9 +18,9 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	auto Owner = GetOwner();
 	// ...
-	
+	Owner->SetActorRotation( FRotator(.0f,-60.0f,.0f));
 }
 
 
