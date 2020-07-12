@@ -18,6 +18,8 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
+	auto Owner = GetOwner();
+	UE_LOG(LogTemp, Warning, TEXT("%s at %s"), *Owner->GetName(), *Owner->GetActorLocation().ToString());
 
 	// ...
 	
