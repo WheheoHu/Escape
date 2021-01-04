@@ -2,7 +2,7 @@
 
 
 #include "Grabber.h"
-
+#include "Math/Vector.h"
 // Sets default values for this component's properties
 UGrabber::UGrabber()
 {
@@ -19,7 +19,7 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 	auto Owner = GetOwner();
-	UE_LOG(LogTemp, Warning, TEXT("%s at %s"), *Owner->GetName(), *Owner->GetActorLocation().ToString());
+	UE_LOG(LogTemp, Warning, TEXT("%s at %s !!"), *Owner->GetName(), *Owner->GetActorLocation().ToString());
 
 	// ...
 	
@@ -31,6 +31,22 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Get player view point this tick
+	FVector PlayerViewPointViewLocation;
+	FRotator PlayerViewPointViewRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		PlayerViewPointViewLocation,
+		PlayerViewPointViewRotation
+	);
+	//TODO log out this   
+	UE_LOG(LogTemp, Warning,
+		TEXT("PlayerViewPointLocation is %s ,Rotation is %s"),
+		*PlayerViewPointViewLocation.ToString(),
+		*PlayerViewPointViewRotation.ToString()
+	);
+	
+	//Ray-cast out to reach distance
+
+	//see what we hit
 }
 
