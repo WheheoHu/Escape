@@ -27,14 +27,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 private:
 	UPROPERTY(VisibleAnywhere)
-		float OpenAngle = 45.0f;
+		float OpenAngle = 60.0f;
 	UPROPERTY(EditAnywhere)
 		ATriggerVolume* PressurePlate;
 	UPROPERTY(EditAnywhere)
 		float DoorCloseDelay = 1.0f;
 
 	float LastDoorOpenTime;
-	AActor* ActorOpenDoor;
 	AActor* Owner;
-		
+	float GetTotalMassOfActorOnPlate();
 };
