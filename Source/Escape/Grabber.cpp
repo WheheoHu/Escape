@@ -21,32 +21,23 @@ void UGrabber::BeginPlay()
 	Super::BeginPlay();
 	auto Owner = GetOwner();
 
-
 	// look for attached physics handle
 	FindPhysicsHandle();
 
 	//Initial grab
 	InitGrab();
-
-
-
 }
 
 
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	FVector PlayerViewPointViewLocation;
-	FRotator PlayerViewPointViewRotation;
+	//get player view information
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		PlayerViewPointViewLocation,
 		PlayerViewPointViewRotation
 	);
-
-
-
-	FVector LineTraceEnd = PlayerViewPointViewLocation + PlayerViewPointViewRotation.Vector() * Reach;
+	auto LineTraceEnd = GetLineTraceEnd();
 	//if physics handle is attached
 	if (PhysicsHandle->GrabbedComponent)
 	{
@@ -68,20 +59,19 @@ void UGrabber::Grab()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Line trace hit: %s"), *HitBody->GetName());
 		// attach physics handle 
-		PhysicsHandle->GrabComponentAtLocation(
+		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			ComponentToGrab,
 			NAME_None,
-			ComponentToGrab->GetOwner()->GetActorLocation()
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			PlayerViewPointViewRotation
 		);
 	}
-
-	
 }
 
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab released"));
-	//TODO release physics handle 
+	// release physics handle 
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -109,17 +99,9 @@ void UGrabber::InitGrab()
 }
 
 const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
-{	// Get player view point this tick
-	FVector PlayerViewPointViewLocation;
-	FRotator PlayerViewPointViewRotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
-		PlayerViewPointViewLocation,
-		PlayerViewPointViewRotation
-	);
-
-
-
-	FVector LineTraceEnd = PlayerViewPointViewLocation + PlayerViewPointViewRotation.Vector() * Reach;
+{
+	//get LineTraceEnd
+	auto LineTraceEnd = GetLineTraceEnd();
 	//draw debug line for line trace
 	/*DrawDebugLine(
 		GetWorld(),
@@ -132,7 +114,6 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 		10.f
 	);*/
 
-
 	//Ray-cast out to reach distance
 	FHitResult Hit;
 	FCollisionQueryParams TraceParam(FName(""), false, GetOwner());
@@ -144,9 +125,13 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 		TraceParam
 	);
 
-
-
 	//see what we hit
 	return Hit;
+}
+
+const FVector UGrabber::GetLineTraceEnd()
+{
+	FVector LineTraceEnd = PlayerViewPointViewLocation + PlayerViewPointViewRotation.Vector() * Reach;
+	return LineTraceEnd;
 }
 
