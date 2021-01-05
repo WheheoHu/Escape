@@ -22,11 +22,8 @@ void UGrabber::BeginPlay()
 	auto Owner = GetOwner();
 
 	// look for attached physics handle
-	if (!PhysicsHandle)
-	{
-		return;
-	}
 	FindPhysicsHandle();
+	
 
 	//Initial grab
 	InitGrab();

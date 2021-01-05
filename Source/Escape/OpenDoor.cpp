@@ -17,25 +17,29 @@ UOpenDoor::UOpenDoor()
 // Called when the game starts
 void UOpenDoor::BeginPlay()
 {
-	
+	Super::BeginPlay();
 	Owner = GetOwner();
 	if (!Owner)
 	{
 		UE_LOG(LogTemp,Error,TEXT("NO Owner Finded"))
 	}
-	Super::BeginPlay();
+	if (!PressurePlate)
+	{
+		UE_LOG(LogTemp,Error,TEXT("No Trigger Volume FOUND!"))
+	}
 
 }
 
 void UOpenDoor::OpenDoor()
 {
 
-	// ...
+	// Open door
 	if (!Owner)
 	{
 		return;
 	}
-	Owner->SetActorRotation(FRotator(.0f, -OpenAngle, .0f));
+	//Owner->SetActorRotation(FRotator(.0f, -OpenAngle, .0f));
+	OnOpenRequest.Broadcast();
 }
 
 
@@ -58,7 +62,8 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		{
 			return;
 		}
-		Owner->SetActorRotation(FRotator(.0f, 0, .0f));
+		//Owner->SetActorRotation(FRotator(.0f, 0, .0f));
+		OnCloseRequest.Broadcast();
 	}
 }
 
@@ -67,6 +72,10 @@ float UOpenDoor::GetTotalMassOfActorOnPlate()
 	float TotalMass = 0.f;
 	//Find all the overlapping actors
 	TArray<AActor*> OverLappingActors;
+	if (!PressurePlate)
+	{
+		return TotalMass;
+	}
 	PressurePlate->GetOverlappingActors(OverLappingActors);
 	//Iterate through them adding their masses
 	for (auto& Actor : OverLappingActors)
