@@ -23,15 +23,17 @@ void UGrabber::BeginPlay()
 	UE_LOG(LogTemp, Warning, TEXT("%s at %s !!"), *Owner->GetName(), *Owner->GetActorLocation().ToString());
 
 	// look for attached physics handle
-	PhysiscsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysiscsHandle)
-	{
-
-	}
-	else
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	InputComponemt = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (!PhysicsHandle)
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s is missing physics handle component"), *GetOwner()->GetName());
 	}
+	if (!InputComponemt)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s is missing input component"), *GetOwner()->GetName());
+	}
+
 }
 
 
