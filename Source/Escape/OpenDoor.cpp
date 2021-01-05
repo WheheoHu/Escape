@@ -17,7 +17,12 @@ UOpenDoor::UOpenDoor()
 // Called when the game starts
 void UOpenDoor::BeginPlay()
 {
+	
 	Owner = GetOwner();
+	if (!Owner)
+	{
+		UE_LOG(LogTemp,Error,TEXT("NO Owner Finded"))
+	}
 	Super::BeginPlay();
 
 }
@@ -26,6 +31,10 @@ void UOpenDoor::OpenDoor()
 {
 
 	// ...
+	if (!Owner)
+	{
+		return;
+	}
 	Owner->SetActorRotation(FRotator(.0f, -OpenAngle, .0f));
 }
 
@@ -45,7 +54,10 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	{
 
 		//close door
-
+		if (!Owner)
+		{
+			return;
+		}
 		Owner->SetActorRotation(FRotator(.0f, 0, .0f));
 	}
 }

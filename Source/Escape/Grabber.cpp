@@ -22,6 +22,10 @@ void UGrabber::BeginPlay()
 	auto Owner = GetOwner();
 
 	// look for attached physics handle
+	if (!PhysicsHandle)
+	{
+		return;
+	}
 	FindPhysicsHandle();
 
 	//Initial grab
@@ -39,6 +43,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	);
 	auto LineTraceEnd = GetLineTraceEnd();
 	//if physics handle is attached
+	if (!PhysicsHandle)
+	{
+		return;
+	}
 	if (PhysicsHandle->GrabbedComponent)
 	{
 		//move object
@@ -59,6 +67,10 @@ void UGrabber::Grab()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Line trace hit: %s"), *HitBody->GetName());
 		// attach physics handle 
+		if (!PhysicsHandle)
+		{
+			return;
+		}
 		PhysicsHandle->GrabComponentAtLocationWithRotation(
 			ComponentToGrab,
 			NAME_None,
@@ -72,6 +84,10 @@ void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab released"));
 	// release physics handle 
+	if (!PhysicsHandle)
+	{
+		return;
+	}
 	PhysicsHandle->ReleaseComponent();
 }
 
