@@ -22,8 +22,16 @@ void UGrabber::BeginPlay()
 	auto Owner = GetOwner();
 	UE_LOG(LogTemp, Warning, TEXT("%s at %s !!"), *Owner->GetName(), *Owner->GetActorLocation().ToString());
 
-	// ...
-	
+	// look for attached physics handle
+	PhysiscsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysiscsHandle)
+	{
+
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s is missing physics handle component"), *GetOwner()->GetName());
+	}
 }
 
 
@@ -46,7 +54,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	//	*PlayerViewPointViewLocation.ToString(),
 	//	*PlayerViewPointViewRotation.ToString()
 	//);
-	float Reach = 100.f;
+	
 	FVector LineTraceEnd = PlayerViewPointViewLocation +PlayerViewPointViewRotation.Vector()*Reach;
 	DrawDebugLine(
 		GetWorld(),
@@ -61,7 +69,22 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	
 	//Ray-cast out to reach distance
-	
+	FHitResult Hit;
+	FCollisionQueryParams TraceParam(FName(""), false, GetOwner());
+	GetWorld()->LineTraceSingleByObjectType(
+		Hit,
+		PlayerViewPointViewLocation,
+		LineTraceEnd,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParam
+	);
+
+	auto HitRes = Hit.GetActor();
+	if (HitRes)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Line trace hit: %s"), *HitRes->GetName());
+	}
+
 	//see what we hit
 }
 
